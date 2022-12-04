@@ -22,6 +22,19 @@ class DBManager
         $ps->execute();
     }
 
+    function address_update($customer_id, $post_code, $prefectures, $town, $address1, $address2, $number)
+    { //住所情報登録・更新処理
+        $pdo = $this->dbconnect();
+        $address = $prefectures . $town . $address1 . $address2;
+        $sql = "UPDATE customer SET customer_postalCode = ?,customer_address = ?,customer_number = ? WHERE customer_id = ?";
+        $ps = $pdo->prepare($sql);
+        $ps->bindValue(1, $post_code, PDO::PARAM_STR);
+        $ps->bindValue(2, $address, PDO::PARAM_STR);
+        $ps->bindValue(3, $number, PDO::PARAM_STR);
+        $ps->bindValue(4, $customer_id, PDO::PARAM_STR);
+        $ps->execute();
+    }
+
     function login_check($customer_email, $customer_password)
     { //ログイン情報確認
         $pdo = $this->dbconnect();
@@ -287,6 +300,55 @@ class DBManager
             echo        "<buttun class=\"closeMenuButton\">閉じる</buttun>";
             echo    "</div>";
             echo "</div>";
+        }
+    }
+
+    function menu_allergy_filter($filtering_allergy_key) //アレルギーフィルター
+    {
+        $pdo = $this->dbconnect();
+        //副副問い合わせ、アレルギーの存在するIDを使い、アレルギーの存在しないIDを取得、取得したIDからメニュー情報取得
+        $sql = "SELECT * FROM menu WHERE menu_id IN (SELECT menu_id FROM inclusion_allergy
+                WHERE menu_id NOT IN (SELECT DISTINCT menu_id FROM inclusion_allergy WHERE ";
+        $ps = $pdo->prepare($sql);
+        //配列の要素数取得
+        $allergy_num = count($filtering_allergy_key);
+        //要素の数だけORで条件を追加
+        for ($i = 0; $i < $allergy_num; $i++) {
+            if ($i == 0) {
+                $sql = $sql . "allergy_id = ? ";
+                continue;
+            }
+            $sql = $sql . "OR allergy_id = ? ";
+        }
+        $sql = $sql . "))";
+
+        $ps = $pdo->prepare($sql);
+        //値をバインド
+        for ($i = 0; $i < $allergy_num; $i++) {
+            $ps->bindValue($i + 1, $filtering_allergy_key[$i], PDO::PARAM_STR);
+        }
+
+        $ps->execute();
+
+        $menu = $ps->fetchAll();
+
+        if (!isset($menu)) {
+            return 0;
+        }
+
+        foreach ($menu as $index => $menu_data) {
+
+            echo '<div class="menuWrapper">';
+            echo '<p class="menuText">' . $menu_data['menu_name'] . '</p>';
+            echo '<img class="menuImage" src=' . 'img/' . $menu_data['menu_picture'] .  '>';
+            echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
+            echo '<div class="btnWrapper">';
+            echo '<button class="deleteButtun">削除</button><button class="addButtun" value=' . "$index" . '>追加</button>';
+            echo '</div>';
+            echo '<div class="menuCountArea">';
+            echo '<p class = "selectCount">0食</p>';
+            echo '</div>';
+            echo '</div>';
         }
     }
     function menuheader()

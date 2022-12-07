@@ -234,12 +234,27 @@ $dbmng = new DBManager();
 
     const sendButtun = document.getElementById('sendButtun');
     sendButtun.addEventListener('click', () => {
+      // clickの値を取得する処理
+      const selectId = document.getElementById('selectId');
+      let len = selectId.childElementCount;
+
+      let checkValue = 0;
+      for (let i = 0; i < len; i++) {
+
+        if (selectId.options[i].selected) {
+          checkValue = selectId.options[i].value;
+          console.log("succees" + checkValue)
+        }
+      }
+
+
       if (allergyArray.length > 0) {
         $.ajax({
           type: "POST",
-          url: "techacademy.php",
+          url: "allergyFillter.php",
           data: {
-            "names": allergyArray
+            "names": allergyArray,
+            "checkValue": checkValue
           },
           success: function(data) {
             const nodeArea = document.getElementById("filter")
@@ -496,6 +511,8 @@ $dbmng = new DBManager();
         foodContentTextAdd.setAttribute("value", i);
       })
     }
+
+
 
 
     // allergy判定の処理

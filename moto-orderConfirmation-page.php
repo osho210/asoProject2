@@ -28,12 +28,6 @@
         }
     }
     echo $_POST["value1"];
-    // print_r($pushArrayKey);
-    // echo '<br>';
-    // print_r($pushArrayVal);
-    // echo '<p>' . 'test' . '</p>';
-
-
     ?>
 </body>
 

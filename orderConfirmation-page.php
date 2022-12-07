@@ -71,7 +71,35 @@
                     <button type="button" class="btn btn-success" onclick="location.href='orderComplete-page.php'">申込む</button>
                 </p>
             </div>
+
     </main>
 
 </html>
-</body>
+</body>]
+
+
+<script>
+    nextbtnSubmit.addEventListener('click', () => {
+        const orderData = new FormData();
+        orderData.append("order_menu_1", <?php echo $menu_data[0] ?>); //注文メニューのデータ
+        orderData.append("order_menu_2", <?php echo $menu_data[1] ?>); //注文メニューのデータ
+        orderData.append("order_menu_3", <?php echo $menu_data[2] ?>); //注文メニューのデータ
+        orderData.append("order_menu_4", <?php echo $menu_data[3] ?>); //注文メニューのデータ
+        orderData.append("order_menu_5", <?php echo $menu_data[4] ?>); //注文メニューのデータ
+        orderData.append("order_menu_6", <?php echo $menu_data[5] ?>); //注文メニューのデータ
+        orderData.append("order_menu_7", <?php echo $menu_data[6] ?>); //注文メニューのデータ
+
+        orderData.append("destination_name", <?php echo "\"" . $_SESSION["order_name"] . "\"" ?>); //届け先名
+        orderData.append("delivery_preferred_date", <?php echo "\"" . $_SESSION["delivery_preferred_date"] . "\"" ?>); //配達希望日
+        orderData.append("delivery_time_key", <?php echo "\"" . $_SESSION["order_time_key"] . "\"" ?>); //配達時間のキー
+        orderData.append("payment_key", <?php echo "\"" . $_SESSION["order_payment"] . "\"" ?>); //支払い方法のキー
+        orderData.append("customer_id", <?php echo "\"" . $_SESSION["user_id"] . "\"" ?>);
+        fetch("orderData.php", {
+            method: "POST",
+            body: orderData,
+        });
+        setTimeout(() => {
+            location.href = "orderComplete-page.php"
+        }, 100);
+    })
+</script>

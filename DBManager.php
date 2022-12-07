@@ -322,13 +322,10 @@ class DBManager
         }
     }
 
-    function menu_allergy_filter($filtering_allergy_key) //アレルギーフィルター
+    function menu_allergy_filter($filtering_allergy_key, $sort_key) //アレルギーフィルター
     {
         $pdo = $this->dbconnect();
-        //副副問い合わせ、アレルギーの存在するIDを使い、アレルギーの存在しないIDを取得、取得したIDからメニュー情報取得
-        // $sql = "SELECT * FROM menu WHERE menu_id IN (SELECT menu_id FROM inclusion_allergy
-        //         WHERE menu_id NOT IN (SELECT DISTINCT menu_id FROM inclusion_allergy WHERE ";
-
+        //副問い合わせ　指定したアレルギーを含むメニューのIDを検索し、NOT INでメニュー情報指定アレルゲンを含まないメニュー情報取得
         $sql = "SELECT * FROM menu WHERE menu_id NOT IN (SELECT DISTINCT menu_id FROM inclusion_allergy WHERE ";
         $ps = $pdo->prepare($sql);
         //配列の要素数取得
@@ -341,7 +338,22 @@ class DBManager
             }
             $sql = $sql . "OR allergy_id = ? ";
         }
+
         $sql = $sql . ")";
+
+        if ($sort_key == "1") {
+            $sql = $sql . "ORDER BY menu_sugarContent DESC";
+        } else if ($sort_key == "2") {
+            $sql = $sql . "ORDER BY menu_lipid DESC";
+        } else if ($sort_key == "3") {
+            $sql = $sql . "ORDER BY menu_foodFiber DESC";
+        } else if ($sort_key == "4") {
+            $sql = $sql . "ORDER BY menu_solt DESC";
+        } else if ($sort_key == "5") {
+            $sql = $sql . "ORDER BY menu_calorie DESC";
+        } else if ($sort_key == "6") {
+            $sql = $sql . "ORDER BY menu_protein DESC";
+        }
 
         $ps = $pdo->prepare($sql);
         //値をバインド
@@ -362,7 +374,23 @@ class DBManager
             echo '<div class="menuWrapper">';
             echo '<p class="menuText">' . $menu_data['menu_name'] . '</p>';
             echo '<img class="menuImage" src=' . 'img/' . $menu_data['menu_picture'] .  '>';
-            echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
+
+            if ($sort_key == "1") {
+                echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
+            } else if ($sort_key == "2") {
+                echo '<div class="menuSugar">塩分は' . $menu_data['menu_solt'] . 'g</div>';
+            } else if ($sort_key == "3") {
+                echo '<div class="menuSugar">食物繊維は' . $menu_data['menu_foodFiber'] . 'g</div>';
+            } else if ($sort_key == "4") {
+                echo '<div class="menuSugar">カロリーは' . $menu_data['menu_calorie'] . 'g</div>';
+            } else if ($sort_key == "5") {
+                echo '<div class="menuSugar">タンパク質は' . $menu_data['menu_protein'] . 'g</div>';
+            } else if ($sort_key == "6") {
+                echo '<div class="menuSugar">脂質は' . $menu_data['menu_lipid'] . 'g</div>';
+            } else {
+                echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
+            }
+
             echo '<div class="btnWrapper">';
             echo '<button class="deleteButtun">削除</button><button class="addButtun" value=' . "$index" . '>追加</button>';
             echo '</div>';

@@ -42,7 +42,7 @@
       <img src="img/menu4.png" width="500" height="300" alt="">
     </div>
     <div class="front-back">
-      <button type="button" class="top-botton" onclick="location.href='menu-list.html'">今すぐ始める</button>
+      <button type="button" class="top-botton" onclick="location.href='menu-list.php'">今すぐ始める</button>
 
     </div>
     <div class="text-center">

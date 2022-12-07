@@ -9,15 +9,34 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/menu.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+  </script>
   <style>
     .filter {
       flex-wrap: wrap;
       display: flex;
+      justify-content: space-between;
     }
 
     .filterNone {
       flex-wrap: wrap;
       display: none;
+      justify-content: space-between;
+    }
+
+    .selectButtun {
+      background: #198754;
+      color: white;
+    }
+
+    .menuWrapper {
+      width: 150px;
+    }
+
+    #mainContent {
+      flex-wrap: wrap;
+      display: flex;
+      justify-content: space-between;
     }
   </style>
   <title>食べ食べプラン</title>
@@ -40,6 +59,7 @@ $dbmng = new DBManager();
         ?>
       </div>
       <button class="canselButtun" id="canselButtun">閉じる</button>
+      <button class="sendButtun" id="sendButtun">表示する</button>
     </div>
   </div>
 
@@ -47,7 +67,7 @@ $dbmng = new DBManager();
     <!-- メニュー絞り込み部分 -->
     <div>
       <div class="menuRecomend">
-        <p>メニューからおまかせ選択</p>
+        <p>電光石火のFOODEC</p>
       </div>
       <div class="menuFillter">
         <ul>
@@ -138,7 +158,14 @@ $dbmng = new DBManager();
         $dbmng->menu_sort(6);
         ?>
       </div>
+      <div class="filter" id="filter">
+
+      </div>
     </div>
+
+    <!-- 詳細領域 -->
+    <div id="menuDetail"></div>
+
     <!-- 変更処理 -->
     <button class="choisedMenu" id="choisedMenu" type="submit" disabled>
       <p id="selectMenuCount" name="test">あと7食必要です</p>
@@ -182,6 +209,81 @@ $dbmng = new DBManager();
 
 
 
+    // アレルギー専用の配列
+    let allergyArray = [];
+
+    // アレルギー要素選択の処理
+    const foodWrapper = document.getElementById('food')
+    let foodWrapperChildLength = foodWrapper.childElementCount
+    for (let i = 0; i < foodWrapperChildLength; i++) {
+      foodWrapper.children[i].addEventListener('click', () => {
+        const foodWrapperBtn = foodWrapper.children[i].children[0].getAttribute('value')
+        const foodWrapperWrapper = foodWrapper.children[i]
+        foodWrapperWrapper.classList.add('selectButtun')
+        // 配列内に要素が含まれる場合はクラスの削除
+        if (allergyArray.includes(foodWrapperBtn)) {
+          foodWrapperWrapper.classList.remove('selectButtun');
+          // 配列内のデータの削除
+          let deleteIndex = allergyArray.findIndex(element => element == foodWrapperBtn);
+          allergyArray.splice(deleteIndex, 1)
+        } else {
+          allergyArray.push(foodWrapperBtn)
+        }
+      })
+    }
+
+    const sendButtun = document.getElementById('sendButtun');
+    sendButtun.addEventListener('click', () => {
+      if (allergyArray.length > 0) {
+        $.ajax({
+          type: "POST",
+          url: "techacademy.php",
+          data: {
+            "names": allergyArray
+          },
+          success: function(data) {
+            const nodeArea = document.getElementById("filter")
+            const hasChildNodes = nodeArea.childElementCount
+            // 以前にアレルギーフィルターをかけている場合要素の削除
+            if (hasChildNodes > 0) {
+              while (nodeArea.firstChild) {
+                nodeArea.removeChild(nodeArea.firstChild);
+              }
+            }
+            $("#filter").append(data)
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert('NG');
+          }
+        })
+        // localstrageの値を格納
+
+
+        //  自分以外にfilternonrクラスの付与
+        const filterLength = document.getElementsByClassName('filter').length
+        for (let i = 0; i < filterLength; i++) {
+          // 自分以外のクラスにfilternoneクラスを付与する
+          let filterArea = document.getElementsByClassName('filter')[i];
+          filterArea.classList.add("filterNone")
+          if (filterLength - 1 == i) {
+            filterArea.classList.remove("filterNone")
+
+          }
+        }
+
+        setTimeout(() => {
+          // ページ遷移させないことでアレルギー内容を表示
+          const unallpwPage = document.getElementById('unallpwPage')
+          unallpwPage.classList.add('none')
+          const allowPage = document.getElementById('allowPage')
+          allowPage.classList.remove('none')
+        }, 100)
+        // 1秒後に遷移
+      } else {
+        alert('アレルギーを選んでください')
+      }
+    })
+
 
     // filterNoneクラスがついていないものを取得
     const filterNoneSearch = (clickNum) => {
@@ -197,6 +299,26 @@ $dbmng = new DBManager();
         const menuWrapperBtnWrapperAddVal = menuWrapperBtnWrapperAdd.value //addbuttunのvalueの確保
         const menuWrapperNumWrapper = menuWrapper.childNodes[4]; //countの確保
         const menuWrapperBtnWrapperCount = menuWrapperNumWrapper.childNodes[0]
+
+        // imgのajax
+        const menuWrapperImage = menuWrapper.childNodes[1];
+        menuWrapperImage.addEventListener('click', () => {
+          $.ajax({
+            type: "POST",
+            url: "imageAjax.php",
+            data: {
+              "names": menuWrapperBtnWrapperAddVal
+            },
+            success: function(data) {
+              const menuDetail = document.getElementById("menuDetail")
+              // 以前にアレルギーフィルターをかけている場合要素の削除
+              $("#menuDetail").append(data)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+              alert('NG');
+            }
+          })
+        })
 
         Object.values(menuCountArrayStorage).forEach(value => {
           Object.keys(value).forEach(key => {
@@ -278,7 +400,6 @@ $dbmng = new DBManager();
           menuCountArray.findIndex(element => element == selectBtnValue);
           menuCountArray.splice(deleteIndex, 1)
           selectCount.innerHTML = arrayValueSearch(selectBtnValue) + "食";
-
           // 送信可能か判定
           selectMenuFn();
         }
@@ -303,7 +424,7 @@ $dbmng = new DBManager();
     menuSubmit.addEventListener('click', () => {
       // localstorageにデータが7子含まれている場合画面遷移
       if (menuCountArrayStorage) {
-        localStorage.removeItem('key')
+        localStorage.clear()
         alert('success')
       }
 
@@ -316,14 +437,9 @@ $dbmng = new DBManager();
           j++;
         }
       }
-      // もしlocalstorageが存在する場合は削除
-      if (localStorage.getItem('key')) {
-        console.log('succes')
-        localStorage.removeItem('key');
-      }
       let json = JSON.stringify(testArray, undefined, 1);
       localStorage.setItem('key', json)
-      location.href = "orderinfo-page.php";
+      location.replace("orderinfo-page.php");
     })
 
 
@@ -380,6 +496,10 @@ $dbmng = new DBManager();
         foodContentTextAdd.setAttribute("value", i);
       })
     }
+
+
+    // allergy判定の処理
+
 
     selectMenuFn()
   </script>

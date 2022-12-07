@@ -125,7 +125,7 @@ class DBManager
         $menu_list = $ps->fetchAll();
         foreach ($menu_list as $index => $menu_data) {
 
-            echo '<div class="menuWrapper">';
+            echo '<div class="menuWrapper" value=' .   ($menu_data["menu_id"] - 1) .  '>';
             echo '<p class="menuText">' . $menu_data['menu_name'] . '</p>';
             echo '<img class="menuImage" src=' . 'img/' . $menu_data['menu_picture'] .  '>';
             echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
@@ -146,9 +146,13 @@ class DBManager
         $sql = "SELECT * FROM allergy_ingredient";
         $ps = $pdo->query($sql);
         $allergy_list = $ps->fetchAll();
-        foreach ($allergy_list as  $allergy_data) {
+        foreach ($allergy_list as  $index => $allergy_data) {
             echo '<div>';
-            echo '<buttun class="foodContentText name="allergy[]">' . $allergy_data['allergy_IngredientName'] . '</buttun>';
+            if ($index < 10) {
+                echo '<buttun class="foodContentText name="name1" value=' . "000000" . "$index" . '>' . $allergy_data['allergy_IngredientName'] . '</buttun>';
+            } else {
+                echo '<buttun class="foodContentText name="name1" value=' . "00000" . "$index" . '>' . $allergy_data['allergy_IngredientName'] . '</buttun>';
+            }
             echo '</div>';
         }
     }
@@ -203,7 +207,22 @@ class DBManager
             echo '<div class="menuWrapper">';
             echo '<p class="menuText">' . $menu_data['menu_name'] . '</p>';
             echo '<img class="menuImage" src=' . 'img/' . $menu_data['menu_picture'] .  '>';
-            echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
+
+            if ($sort_key == "1") {
+                echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
+            } else if ($sort_key == "2") {
+                echo '<div class="menuSugar">塩分は' . $menu_data['menu_solt'] . 'g</div>';
+            } else if ($sort_key == "3") {
+                echo '<div class="menuSugar">食物繊維は' . $menu_data['menu_foodFiber'] . 'g</div>';
+            } else if ($sort_key == "4") {
+                echo '<div class="menuSugar">カロリーは' . $menu_data['menu_calorie'] . 'g</div>';
+            } else if ($sort_key == "5") {
+                echo '<div class="menuSugar">タンパク質は' . $menu_data['menu_protein'] . 'g</div>';
+            } else if ($sort_key == "6") {
+                echo '<div class="menuSugar">脂質は' . $menu_data['menu_lipid'] . 'g</div>';
+            }
+
+            // echo '<div class="menuSugar">糖質は' . $menu_data['menu_sugarContent'] . 'g</div>';
             echo '<div class="btnWrapper">';
             echo '<button class="deleteButtun">削除</button><button class="addButtun" value=' . "$index" . '>追加</button>';
             echo '</div>';
@@ -307,8 +326,10 @@ class DBManager
     {
         $pdo = $this->dbconnect();
         //副副問い合わせ、アレルギーの存在するIDを使い、アレルギーの存在しないIDを取得、取得したIDからメニュー情報取得
-        $sql = "SELECT * FROM menu WHERE menu_id IN (SELECT menu_id FROM inclusion_allergy
-                WHERE menu_id NOT IN (SELECT DISTINCT menu_id FROM inclusion_allergy WHERE ";
+        // $sql = "SELECT * FROM menu WHERE menu_id IN (SELECT menu_id FROM inclusion_allergy
+        //         WHERE menu_id NOT IN (SELECT DISTINCT menu_id FROM inclusion_allergy WHERE ";
+
+        $sql = "SELECT * FROM menu WHERE menu_id NOT IN (SELECT DISTINCT menu_id FROM inclusion_allergy WHERE ";
         $ps = $pdo->prepare($sql);
         //配列の要素数取得
         $allergy_num = count($filtering_allergy_key);
@@ -320,7 +341,7 @@ class DBManager
             }
             $sql = $sql . "OR allergy_id = ? ";
         }
-        $sql = $sql . "))";
+        $sql = $sql . ")";
 
         $ps = $pdo->prepare($sql);
         //値をバインド

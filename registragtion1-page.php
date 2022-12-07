@@ -5,7 +5,7 @@ if (
     isset($_SESSION["user_name"]) == true  &&
     isset($_SESSION["user_id"]) == true
 ) {
-    header('Location:registragtion2-page.html');
+    header('Location:registragtion2-page.php');
 }
 ?>
 
@@ -31,14 +31,11 @@ if (
     <!-- G1-4に対応している画面です -->
     <div class="main">
         <!-- header読み込み -->
-        <?php require 'DBManager.php';
-        $dbmng = new DBManager();
-        $dbmng->menuheader() ?>
 
         <div class="text-center">
             <p class="text-success"><strong>ご購入手続き</strong></p>
             <!--線と丸の画像-->
-            <li><img src="img/image1.png" /></li>
+            <li><img class="orderImage" src="img/image1.png" /></li>
 
             <form id="customer_data">
                 <p>お名前</p>
@@ -51,11 +48,11 @@ if (
 
                 <p>パスワード(半角英数6文字以上)</p>
                 <p style="color:red" id="passErrMesage" class="NameErrMesage"></p>
-                <input type="text" name="passward" id="inputPass" placeholder="Password">
+                <input type="password" name="passward" id="inputPass" placeholder="Password">
             </form>
 
-            <p>すでにアカウントをお持ちの方はこちらから<a href="login-page.html">ログイン</a>してくださいしてください</p>
-            <p><button type="button" class="btn btn-secondary" onclick="location.href='menu-list.html'">戻る</button>
+            <p>すでにアカウントをお持ちの方はこちらから<a href="login-page.php">ログイン</a>してくださいしてください</p>
+            <p><button type="button" class="btn btn-secondary" onclick="location.href='menu-list.php'">戻る</button>
                 <button type="button" id="nextbtnSubmit" class="btn btn-success">次へ</button>
             </p>
         </div>
@@ -134,7 +131,7 @@ if (
                 body: formData,
             });
             setTimeout(() => {
-                location.href = "registragtion2-page.html"
+                location.href = "registragtion2-page.php"
             }, 100);
         } else if (errCount > 0) {
             alert("入力に誤りがあります。")

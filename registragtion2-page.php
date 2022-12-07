@@ -6,11 +6,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/reset.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
   <style>
     .NameErrMesageNone {
       display: none;
+    }
+
+    p {
+      margin: 0;
+      font-size: 16px;
     }
   </style>
   <title>食べ食べプラン</title>
@@ -22,29 +26,29 @@
     <div class="text-center">
       <p class="text-success"><strong>ご購入手続き</strong></p>
       <!--線と丸の画像-->
-      <img src="img/image2.png" />
+      <img class="orderImage" src="img/image2.png" />
       <p>お届け先名　[必須]</p>
       <p style="color:red" id="NameErrMesage" class="NameErrMesage"></p>
-      <input type="text" name="Name" id="Name" placeholder="Name" />
+      <input class="inputBottom" type="text" name="Name" id="Name" placeholder="Name" />
       <p>郵便番号　[必須]</p>
       <p style="color:red" id="postcodeErrMesage" class="NameErrMesage"></p>
-      <input type="text" name="Post Code" id="inputpostcode" placeholder="Post Code[-]無し" />
+      <input class="inputBottom" type="text" name="Post Code" id="inputpostcode" placeholder="Post Code[-]無し" />
       <p>都道府県　[必須]</p>
       <p style="color:red" id="PrefecturesErrMesage" class="NameErrMesage"></p>
-      <input type="text" name="Prefectures" id="Prefectures" placeholder="Prefectures" />
+      <input class="inputBottom" type="text" name="Prefectures" id="Prefectures" placeholder="Prefectures" />
       <p>地区町村　[必須]</p>
       <p style="color:red" id="TownsErrMesage" class="NameErrMesage"></p>
-      <input type="text" name="Towns" id="Towns" placeholder="Town" />
+      <input class="inputBottom" type="text" name="Towns" id="Towns" placeholder="Town" />
       <p>住所１ [必須]</p>
       <p style="color:red" id="address1ErrMesage" class="NameErrMesage"></p>
-      <input type="text" name="address1" id="address1" placeholder="address1" />
+      <input class="inputBottom" type="text" name="address1" id="address1" placeholder="address1" />
       <p>住所２</p>
-      <input type="text" name="address2" placeholder="address2" />
+      <input class="inputBottom" type="text" name="address2" placeholder="address2" />
       <p>電話番号　[必須]</p>
       <p style="color:red" id="telErrMesage" class="NameErrMesage"></p>
-      <input type="text" id="inputtel" name="number" placeholder="number" />
+      <input class="inputBottom" type="text" id="inputtel" name="number" placeholder="number" />
       <p>お届け日</p>
-      <input type="date" name="num01" id="num01" value="date" min="2022-11-11" max="2025-12-31" step="1" />
+      <input class="inputBottom" type="date" name="num01" id="num01" value="date" min="2022-11-11" max="2025-12-31" step="1" />
       <p>お届け時間</p>
       <p><select name="time">
           <option value="">-</option>
@@ -53,7 +57,7 @@
           <option value="3">16:00~18:00</option>
           <option value="4">18:00~20:00</option>
         </select></p>
-      <p><button type="button" class="btn btn-secondary" onclick="location.href='registragtion1-page.html'">
+      <p><button type="button" class="btn btn-secondary" onclick="location.href='registragtion1-page.php'">
           戻る
         </button>
         <button type="button" id="nextbtnSubmit" class="btn btn-success">
@@ -67,6 +71,14 @@
 </html>
 
 <script>
+  // 入力が止まったタイミングで処理を実行
+  const AddressSearch = () => {
+    let api = 'https://zipcloud.ibsnet.co.jp/api/search?zipcode=';
+    let url = api + param;
+    const AddressNomber = document.getElementById('inputpostcode') //郵便番号
+  }
+
+
   var today = new Date();
   today.getFullYear();
   today.getMonth() + 1;
@@ -179,7 +191,7 @@
         method: "POST",
         body: formData,
       });
-      location.href = "payment-page.html";
+      location.href = "payment-page.php";
     } else if (errCount > 0) {
       alert("入力に誤りがあります。")
     }

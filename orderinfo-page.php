@@ -12,7 +12,7 @@
     <style>
         .menuDiv {
             display: flex;
-            justify-content: space-between;
+            margin-bottom: 5px
         }
 
         .menuInput {
@@ -33,7 +33,8 @@
         }
 
         .menuDiv img {
-            width: 30%;
+            height: 100px;
+            margin-left: 3px;
         }
 
         .block {
@@ -46,7 +47,6 @@
         }
 
         .orderMenuName {
-            line-height: 100px;
             font-size: 16px;
         }
 
@@ -66,6 +66,8 @@
 
         .subtraction {
             border: none;
+            background: #391b1b;
+            color: white;
         }
 
         .form {
@@ -74,6 +76,15 @@
 
         .btnWrapper {
             margin-top: 50px;
+        }
+
+        .closeMenuButton {
+            border: none;
+        }
+
+        .closeMenuButton p {
+            font-size: 16px;
+            margin: 0;
         }
     </style>
 </head>
@@ -96,12 +107,6 @@
             <button class="closeMenuButton" id="choisedMenu" type="submit">
                 <p id="selectMenuCount" name="test">確定する</p>
             </button>
-            <br>
-            <a>
-                <button class="closeMenuButton">
-                    リンクで遷移する
-                </button>
-            </a>
         </form>
     </div>
 </body>
@@ -184,7 +189,7 @@
 
 
                     const menuDiv2 = document.createElement('div')
-                    menuDiv2.classList.add('menuDiv2')
+                    menuDiv2.classList.add('menuDiv')
                     const menuImage = document.createElement('img')
                     menuImage.classList.add = "orderMenuImg"
                     menuImage.src = "img/" + menuArray[keyValue][1];
@@ -199,9 +204,6 @@
 
                     const deleteBtn = document.createElement('div')
                     deleteBtn.classList.add('deleteBtn')
-                    const button = document.createElement('button')
-                    button.innerHTML = "✘"
-                    deleteBtn.appendChild(button)
 
 
                     menuDiv.appendChild(changeOrder);
@@ -228,45 +230,8 @@
         // console.log('呼び出しテスト')
     }
 
-    // 配列がiが7以下の場合(i=0番目スタート)
-    // for (let i = 7; i > 0; i--) {
-    //     // 配列の要素の先頭を取得して連想配列のkeyに格納
-    //     localStorageArrayVal = menuCountArrayStorage[0];
-    //     // console.log(localStorageArrayVal)
-    //     let count = 0;
-    //     menuCountArrayStorage.forEach((element, index, array) => {
-    //         // 同じ値が2つあった場合１つ取れていない
-    //         if (element == localStorageArrayVal) {
-    //             // 配列の削除
-    //             menuCountArrayStorage.splice(index, 1)
-    //             // console.log(menuCountArrayStorage)
-    //             console.log(array)
-    //             console.log(i)
-    //             count++;
-    //         }
-    //     });
-    //     // 連想配列にkeyとvalueを格納
-    //     localStorageArray[localStorageArrayIndex] = {
-    //         localStorageArrayVal: count
-    //     };
-    //     // console.log(localStorageArrayVal)
-    //     localStorageArrayIndex++;
-    // }
-
-    // console.log(localStorageArray)
-    // 配列内で検索(filterでカウントアップ)
-    // カウントアップ終了時に連想配列のvalueに値を格納
-    // }
 
     valueCountFc();
-    // 連想配列のlengthだけcreateのdom操作を実行
-
-
-    // localstorageの値で要素を生成
-    //最初の値で要素を生成して配列内の要素に値が含まれるならカウントアップして配列の値を削除する
-    // localstorageの値の破棄
-
-    // input要素に格納
 </script>
 
 </html>

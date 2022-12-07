@@ -72,15 +72,17 @@ body {
 .menuImage {
   width: 100px;
 }
+
 .menuSugar {
   text-align: center;
-  font-size: 90%;
+  font-size: 80%;
   border: 1px solid #000;
   border-radius: 10px;
   padding: 5px 0;
   margin: 10px 0;
-  width: 60%;
+  width: 70%;
 }
+
 .menuText {
   text-align: center;
   font-size: 20px;
@@ -324,10 +326,14 @@ body {
   margin-top: 60px;
 }
 
-
-
-
-
-.menuImage{
+.menuImage {
   width: 100%;
+}
+
+.orderImage {
+  margin-bottom: 20px;
+}
+
+.inputBottom {
+  margin-bottom: 20px;
 }
